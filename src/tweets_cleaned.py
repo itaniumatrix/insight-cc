@@ -2,6 +2,13 @@ import json
 import datetime
 import sys
 
+def main(argv):
+    """Main Function, read input/output filenames from commandline.
+    """
+    in_file = sys.argv[1]
+    out_file = sys.argv[2]
+    clean_and_count(in_file, out_file)
+
 def clean_and_count(filein, fileout):
     with open(filein) as tweetfile:
         f_out=open(fileout, 'w+')
@@ -28,7 +35,6 @@ def clean_and_count(filein, fileout):
                 #problems in input (missing 'text', and 'created_at' fields)
     
                 pass
-        #print('\n{} tweets contained unicode.'.format(num_Unicode))
         print('\n{} tweets contained unicode.'.format(num_Unicode), file=f_out)
         f_out.close()
 
@@ -61,6 +67,6 @@ def has_unicode(string):
     return False
         
 
-in_file = sys.argv[1]
-out_file = sys.argv[2]
-clean_and_count(in_file, out_file)
+# Run this main program if the file is being called (not imported)
+if __name__ == "__main__":
+   main(sys.argv[1:])

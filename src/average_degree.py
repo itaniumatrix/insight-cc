@@ -1,7 +1,22 @@
 import networkx as nx
 import json
 import datetime as dt
-from clean_tex import clean_text_escape, clean_text_unicode
+from tweets_cleaned import clean_text_escape, clean_text_unicode
+import sys
+
+def main(argv):
+    """Main function, requires 3 inputs in commandline following call to average_degree.py:
+    argv[1]: input filename
+    argv[2]: output filename
+    argv[3]: Time Window in seconds, to maintain graph nodes & edges
+    """
+    in_file = sys.argv[1]
+    out_file = sys.argv[2]
+    # Need to convert input string to integer
+    time_secs = int(sys.argv[3])
+    build_graph(in_file, out_file, time_secs)
+
+
 
 def get_nodes(hashtag_list):
     """Return a list of hashtags in lowercase
@@ -61,11 +76,11 @@ def find_avg_degree(graph):
     degree_dict = graph.degree()
     for degree in degree_dict.values():
         total += degree
-    num_nodes = g.number_of_nodes()
+    num_nodes = graph.number_of_nodes()
     if (num_nodes == 0):
         return 0
     else:
-        return total/g.number_of_nodes()
+        return total/graph.number_of_nodes()
 
 def trim_graph(graph, latest_time, num_secs):
     """Remove nodes and edges from graph older than latest_time - num_secs
@@ -110,55 +125,62 @@ def trim_node_list(nodes):
     return out_list
 
 
-import time
+def build_graph(in_file, out_file, time_window):
+    import time
+    t0 = time.time()
 
-t0 = time.time()
+    # NetworkX object stores everything
+    g = nx.Graph()
+    print(out_file)
+    with open(in_file) as tweetfile:
+        f=open(out_file, 'w+')
+        for line in tweetfile:
+            data = json.loads(line)
+            try:
+                entities = data['entities']
+                hashtags = entities['hashtags']
+                #print('length', len(entities['hashtags']))
+                ##Continue to process if JSON line contained >=1 hashtag
+                if (hashtags):
+                    datetime_obj = make_datetime(data['created_at'])
+                    
+                    # Create nodes, edges if # of Hashtags > 1
+                    if (len(hashtags) > 1):
+                        nodes = get_nodes(entities['hashtags'])
+                        #print(nodes)
+                        nodes = trim_node_list(nodes)
+                        edges = compute_edges(nodes)
+                        #print('Edges: ', edges)
+                        g.add_nodes_from(nodes, datetime = datetime_obj)
+                        g.add_edges_from(edges, timestamp = datetime_obj)
 
-g = nx.Graph()
-TIME_WINDOW = 10
-with open('tweets.txt') as tweetfile:
-    f=open('./ft2_trimSH.txt', 'w+')
-    emptycount = 0
-    for line in tweetfile:
-        data = json.loads(line)
-        try:
-            entities = data['entities']
-            hashtags = entities['hashtags']
-            #print('length', len(entities['hashtags']))
-            ##Continue to process if JSON line contained >=1 hashtag
-            if (hashtags):
-                datetime_obj = make_datetime(data['created_at'])
+                    # Remove outdated nodes and edges from graph
+                    trim_graph(g, datetime_obj, time_window)
+
+                #Now compute the degree, after graph is trimmed(updated)
+                avg_degree = find_avg_degree(g)
                 
-                # Create nodes, edges if # of Hashtags > 1
-                if (len(hashtags) > 1):
-                    nodes = get_nodes(entities['hashtags'])
-                    #print(nodes)
-                    nodes = trim_node_list(nodes)
-                    edges = compute_edges(nodes)
-                    #print('Edges: ', edges)
-                    g.add_nodes_from(nodes, datetime = datetime_obj)
-                    g.add_edges_from(edges, timestamp = datetime_obj)
+                #Trim to 2 digits, print to file
 
-                # Remove outdated nodes and edges from graph
-                trim_graph(g, datetime_obj, TIME_WINDOW)
-                #avg_degree = find_avg_degree(g)
-                #print('-Degree-',avg_degree)
-            avg_degree = find_avg_degree(g)
-            
-            #Trim to 2 digits, print to file
-
-            print("%.2f" % avg_degree, file=f)
-    
-        except KeyError:
-            #print('aint got someting')
-            emptycount +=1
+                print("%.2f" % avg_degree, file=f)
         
-        # Catch all other exceptions to allow script to continue running
-        except:
-            pass
-    f.close()
+            except KeyError:
+                """ Handle errors when the JSON line is Twitter error code. (Does not have the fields
+                'created_at' or 'entities' or 'hashtags') --> throws KeyError
+                """
+                pass
+            
+            # Catch all other exceptions to allow script to continue running
+            except:
+                raise
+        # Close output file.
+        f.close()
 
-t1 = time.time()
+    t1 = time.time()
 
-total = t1-t0
-print(total)
+    total = t1-t0
+    print(total)
+
+# Run this main program if the file is being called (not imported)
+if __name__ == "__main__":
+   main(sys.argv[1:])
