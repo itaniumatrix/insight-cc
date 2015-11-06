@@ -1,9 +1,7 @@
 ## Insight Twitter Graph: Coding Challenge
 ===========================================================
-Kevin Wang
-
-UC Berkeley
-
+Kevin Wang  
+UC Berkeley  
 Materials Science & Engineering
 
 ## Required Packages
@@ -17,8 +15,8 @@ Materials Science & Engineering
 
 Cleans Twitter text, extract hashtags from JSON, and builds graph. Trims graph to within a time window of the most-recently processed message. Run with: run.sh.
 
-Input: tweet_input/tweets.txt  {List of JSON Tweet objects}
-Output: tweet_output/ft1.txt  {Cleaned text + # of tweets wtih Unicode}
+Input: tweet_input/tweets.txt  {List of JSON Tweet objects}  
+Output: tweet_output/ft1.txt  {Cleaned text + # of tweets wtih Unicode}  
 	tweet_output/ft2.txt    {Average graph degree, after each tweet}
 
 ## Feature 1 (Cleaning Text): 
