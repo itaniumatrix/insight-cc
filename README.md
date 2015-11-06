@@ -13,10 +13,11 @@ Materials Science & Engineering
   - JSON
   - sys
 
-Cleans Twitter text, extract hashtags from JSON, and builds graph. Trims graph to within a time window of the most-recently processed message. Run with: run.sh. Program prints to shell output, the filename of the second script output: f2.txt.
+Cleans Twitter text, extract hashtags from JSON, and builds graph. Trims graph to within a time window of the most-recently processed message. **Run with: run.sh.** Script calls made with: **python3** (eg. *python3 average_degree.py in.txt out.txt 30*)  
+Program prints to shell output, the filename of the second script output: f2.txt.
 
-*Input*: tweet_input/tweets.txt  {List of JSON Tweet objects}  
-*Output*: tweet_output/ft1.txt   {Cleaned text + # of tweets wtih Unicode}  
+**Input**: tweet_input/tweets.txt  {List of JSON Tweet objects}  
+**Output**: tweet_output/ft1.txt   {Cleaned text + # of tweets wtih Unicode}  
         tweet_output/ft2.txt   {Average graph degree, after each tweet}
 
 ## Feature 1 (Cleaning Text): 
