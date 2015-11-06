@@ -44,10 +44,7 @@ def compute_edges(node_list):
     Basically visit each tuple, ij to build the triangular edge matrix (i = node1, j = node2)
     """ 
     for i in range(num_nodes):
-        #print (str(i),': ',node_list[i])
         for j in range(i+1, num_nodes):
-            
-            #print(node_list[i],node_list[j])
             edge_list.append((node_list[i], node_list[j]))
     return edge_list
 
@@ -103,7 +100,6 @@ def trim_graph(graph, latest_time, num_secs):
         edge_time = edges_dict[edge]
 
         if (edge_time < time_boundary):
-            #print('*yoyo*', edge)
             #Edge is a tuple (u, v), so pass u, v to remove_edge()
             graph.remove_edge(edge[0], edge[1])
 
@@ -134,10 +130,6 @@ def build_graph(in_file, out_file, time_window):
     out_file: output filename
     time_window: Time Window in seconds, to maintain graph nodes & edges (longer means bigger graph and runtime)
     """
-
-    import time
-    t0 = time.time()
-
     # NetworkX object stores everything for the graph (as dictionary of dictionaries) nodes[edges]
     g = nx.Graph()
     print(out_file)
@@ -154,7 +146,6 @@ def build_graph(in_file, out_file, time_window):
             try:
                 entities = data['entities']
                 hashtags = entities['hashtags']
-                #print('length', len(entities['hashtags']))
                 ##Continue to process if JSON line contained at least 1 hashtag
                 if (hashtags):
                     datetime_obj = make_datetime(data['created_at'])
@@ -197,11 +188,6 @@ def build_graph(in_file, out_file, time_window):
                 pass
         # Close output file.
         f.close()
-
-    t1 = time.time()
-
-    total = t1-t0
-    print(total)
 
 # Run this main program if the file is being called (not imported)
 if __name__ == "__main__":
