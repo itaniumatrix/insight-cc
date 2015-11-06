@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
-# example of the run script for running the word count
+# Shell script to call the two Python3 scripts
 
-# I'll execute my programs, with the input directory tweet_input and output the files in the directory tweet_output
-python ./src/words_tweeted.py ./tweet_input/tweets.txt ./tweet_output/ft1.txt
-python ./src/median_unique.py ./tweet_input/tweets.txt ./tweet_output/ft2.txt
+# Looks nearly identical to the example shell script (but I wrote my program and shell script before seeing that) -> We have similar coding styles!
+# average_degree.py takes a 3rd argument: time_window, the number of seconds
+
+python3 ./src/tweets_cleaned.py ./tweet_input/tweets.txt ./tweet_output/ft1.txt
+python3 ./src/average_degree.py ./tweet_input/tweets.txt ./tweet_output/ft2.txt 60
 
 
 

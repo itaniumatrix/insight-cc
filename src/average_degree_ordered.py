@@ -162,17 +162,10 @@ def build_graph(in_file, out_file, time_window):
                     # Create nodes, edges if # of Hashtags > 1. (Nodes with 1 hashtag, 0 connectivity are ignored)
                     if (len(hashtags) > 1):
                         nodes = get_nodes(entities['hashtags'])
-
-                        # Clean hashtags, remove nodes that are null-length
+                        #print(nodes)
                         nodes = trim_node_list(nodes)
-
-                        #Generate Edges list (connect all hashtags in tweet)
                         edges = compute_edges(nodes)
-
-                        """ Add nodes and edges to graph. 
-                        ####   Nodes call is IMPORTANT, to update the timestamp of existing node. ####
-                        This helps with node deletion later, and for future versions with an OrderedDict.
-                        """
+                        #print('Edges: ', edges)
                         g.add_nodes_from(nodes, datetime = datetime_obj)
                         g.add_edges_from(edges, timestamp = datetime_obj)
 

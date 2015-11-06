@@ -3,15 +3,23 @@ import datetime
 import sys
 
 def main(argv):
-    """Main Function, read input/output filenames from commandline.
+    """Main Function for cleaning text. Pass the input & output filenames from commandline.
     """
     in_file = sys.argv[1]
     out_file = sys.argv[2]
     clean_and_count(in_file, out_file)
 
-def clean_and_count(filein, fileout):
-    with open(filein) as tweetfile:
-        f_out=open(fileout, 'w+')
+def clean_and_count(file_in, file_out):
+    """Extracts tweet text and cleans whitespace, escape, and non-ASCII Unicode characters. Saves the cleaned tweets
+    in file_out. Saves the number of tweets that had Unicode characters (> ASCII 127) deleted while cleaning.
+
+    file_in: input file
+    file_out: output file
+    """
+    with open(file_in) as tweetfile:
+        f_out=open(file_out, 'w+')
+
+        # Counter for Tweets with Unicode characters
         num_Unicode = 0
         for line in tweetfile:
             data = json.loads(line)
@@ -39,9 +47,11 @@ def clean_and_count(filein, fileout):
         f_out.close()
 
 def clean_text_escape(string):
-    """Remove Unicode - Python 3.x does this very cleanly with encoding / decoding. For escape characters,
+    """Remove Unicode escape and whitespace characters.
+    Python 3.x does this very cleanly with encoding / decoding. For escape characters,
     Only \n and \t and \/need to be manually changed. The other spec \" \' escape chars are automatically decoded 
     by Python during print. \' Seems to be disallowed in JSON, but if it makes it into the string, is managed by Python.
+    Thus only 3 of the required characters < ASCII 20 are needed to be manually decoded.
     """
     return string.replace('\n', ' ').replace('\t', ' ').replace('\/', '/')
     
@@ -52,7 +62,8 @@ def clean_text_escape(string):
     """
 
 def clean_text_unicode(string):
-    #Strip Unicode characters above ASCII 127
+    """Strip Unicode characters above ASCII 127
+    """
     string = string.encode('ascii', 'ignore').decode()
     return string
     
