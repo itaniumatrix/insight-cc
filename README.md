@@ -3,29 +3,36 @@
 
 Kevin Wang
 UC Berkeley
+
 Materials Science & Engineering
 
 ## Required Packages
 
 - Python 3.4+
 - NetworkX (1.10)
-[native to Python]
-	-datetime
-	-JSON
-	-sys
+-[native to Python]
+ -datetime
+ -JSON
+ -sys
 
-Both features and Python scripts should be called with 2 arguments: 
--file_in 
--file_out
 
-## Feature 1 (Cleaning Text): tweets_cleaned.py
+# Feature 1 (Cleaning Text): 
 
-This was done with native Python string operations.
-tweets_cleaned.py
+Usage:
+'''tweets_cleaned.py filein fileout
+'''
 
-## Feature 2 (Graph of Hashtags, Compute Node Degrees): average_degree.py
+This was performed with native Python string operations.
 
-The graph is built with NetworkX default implementation (regular Python dictionaries). For a large number of nodes and edges, a speed-up may be achieved by using a sorted dictionary, so we don't have to iterate through the whole graph to check against the timestamp.
+# Feature 2 (Graph of Hashtags, Compute Node Degrees): 
+
+Usage: 
+'''average_degree.py filein fileout timewindow
+'''
+
+--timewindow is the number of seconds window that the graph should contain, up until the most recently read Tweet. Default usage is 60s.
+
+The graph is built with NetworkX default implementation (regular Python dictionaries). For a large number of nodes and edges, a speed-up may be achieved by using a sorted dictionary, so we don't have to iterate through the whole graph to check against the timestamp. Using a sorted dictionary also incurs a cost
 
 
 
